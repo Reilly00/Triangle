@@ -5,7 +5,6 @@
 //  Created by Josef Zemlicka on 18.01.2025.
 //
 //  Edited by Ciaran Mullen on 30.01.2025
-
 import SwiftUI
 import CloudKit
 
@@ -15,7 +14,6 @@ class LoginViewViewModel: ObservableObject {
     @Published var isiCloudAvailable: Bool = false
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
-    @Published var navigateToDashboard: Bool = false  // ✅ Ensures navigation works
 
     private let cloudKitManager = CloudKitManager.shared
 
@@ -23,7 +21,6 @@ class LoginViewViewModel: ObservableObject {
         checkiCloudAvailability()
     }
 
-    // ✅ Check iCloud availability
     func checkiCloudAvailability() {
         cloudKitManager.checkiCloudStatus { [weak self] available in
             DispatchQueue.main.async {
@@ -32,31 +29,18 @@ class LoginViewViewModel: ObservableObject {
         }
     }
 
-    // ✅ Merged Login Functionality (Temp-Branch + Main)
     func login() {
         guard !username.isEmpty, !password.isEmpty else {
             errorMessage = "Username and password cannot be empty."
             return
         }
-        
         isLoading = true
-        errorMessage = nil
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-            guard let self = self else { return }
+        // Perform login logic here...
+        print("login is true so should bring to exercise selector")
+        ExerciseSelectorView()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             self.isLoading = false
-
-            if self.username == "user" && self.password == "password" {
-                print("✅ Login Successful - Navigating to Dashboard!")
-                DispatchQueue.main.async {
-                    self.navigateToDashboard = true  // ✅ Enables navigation
-                }
-            } else {
-                print("❌ Invalid Login Attempt")
-                DispatchQueue.main.async {
-                    self.errorMessage = "Invalid username or password"
-                }
-            }
+            self.errorMessage = nil // Clear error after successful login
         }
     }
 }

@@ -145,7 +145,6 @@ struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
             .previewDevice("iPad Pro 11-inch")
-            .previewInterfaceOrientation(.landscapeLeft)
     }
 }
 
