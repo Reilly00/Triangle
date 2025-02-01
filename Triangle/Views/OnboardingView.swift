@@ -117,7 +117,7 @@ struct LoginForm: View {
                 }
             }
             .buttonStyle(TrianglePrimaryButton())
-            .disabled(viewModel.isLoading || !viewModel.isiCloudAvailable)
+            .disabled(viewModel.isLoading || !viewModel.isICloudAvailable)
         }
         .padding()
     }

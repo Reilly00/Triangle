@@ -36,53 +36,56 @@ class CloudKitManager {
         }
     }
 
-    /// Fetch the user's CloudKit record ID (Apple ID)
-    func fetchUserRecord(completion: @escaping (CKRecord.ID?) -> Void) {
-        container.fetchUserRecordID { recordID, error in
-            DispatchQueue.main.async {
-                if let recordID = recordID {
-                    print("✅ User Record ID: \(recordID.recordName)")
-                    completion(recordID)
-                } else {
-                    print("⚠️ Error fetching user record: \(error?.localizedDescription ?? "Unknown error")")
-                    completion(nil)
-                }
-            }
-        }
-    }
-
-    /// Save a new user to CloudKit
-    func saveUser(username: String, email: String, completion: @escaping (Bool, Error?) -> Void) {
-        let record = CKRecord(recordType: "TriangleUsers")
-        record["username"] = username as CKRecordValue
-        record["email"] = email as CKRecordValue
-
-        self.privateDatabase.save(record) { savedRecord, error in
-            DispatchQueue.main.async {
-                if let error = error {
-                    print("❌ Error saving user: \(error.localizedDescription)")
-                    completion(false, error)
-                } else {
-                    print("✅ User saved: \(username)")
-                    completion(true, nil)
-                }
-            }
-        }
-    }
-
-    /// Fetch an existing user from CloudKit
-    func fetchUser(username: String, completion: @escaping (CKRecord?) -> Void) {
+    /// Fetch an existing user from CloudKit (for login verification)
+    func fetchUser(username: String, completion: @escaping (Bool, CKRecord?, Error?) -> Void) {
         let predicate = NSPredicate(format: "username == %@", username)
         let query = CKQuery(recordType: "TriangleUsers", predicate: predicate)
 
         self.privateDatabase.perform(query, inZoneWith: nil) { records, error in
             DispatchQueue.main.async {
-                if let record = records?.first {
+                if let error = error {
+                    print("⚠️ Error fetching user: \(error.localizedDescription)")
+                    completion(false, nil, error)
+                } else if let record = records?.first {
                     print("✅ User found: \(record["username"] ?? "Unknown")")
-                    completion(record)
+                    completion(true, record, nil)
                 } else {
                     print("⚠️ User not found")
-                    completion(nil)
+                    completion(false, nil, nil)
+                }
+            }
+        }
+    }
+
+    /// Save a new user to CloudKit (Prevents duplicate usernames)
+    func saveUser(username: String, email: String, completion: @escaping (Bool, Error?) -> Void) {
+        // Step 1: Check if the username already exists
+        fetchUser(username: username) { exists, _, error in
+            if let error = error {
+                completion(false, error)
+                return
+            }
+
+            if exists {
+                let usernameTakenError = NSError(domain: "CloudKit", code: 1, userInfo: [NSLocalizedDescriptionKey: "Username is already taken."])
+                completion(false, usernameTakenError)
+                return
+            }
+
+            // Step 2: Username is available, create a new CloudKit record
+            let record = CKRecord(recordType: "TriangleUsers")
+            record["username"] = username as CKRecordValue
+            record["email"] = email as CKRecordValue
+
+            self.privateDatabase.save(record) { savedRecord, error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        print("❌ Error saving user: \(error.localizedDescription)")
+                        completion(false, error)
+                    } else {
+                        print("✅ User saved: \(username)")
+                        completion(true, nil)
+                    }
                 }
             }
         }
