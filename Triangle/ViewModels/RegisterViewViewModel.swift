@@ -30,6 +30,7 @@ class RegisterViewViewModel: ObservableObject {
                 self.isLoading = false
                 if success {
                     print("✅ Registration successful!")
+                    print("SHould now bring to exercise selector")
                     ExerciseSelectorView()
                 } else {
                     self.errorMessage = "❌ Registration failed: \(error?.localizedDescription ?? "Unknown error")"

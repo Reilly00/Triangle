@@ -36,7 +36,7 @@ class LoginViewViewModel: ObservableObject {
         }
         isLoading = true
         // Perform login logic here...
-        print("login please")
+        print("login is true so should bring to exercise selector")
         ExerciseSelectorView()
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             self.isLoading = false
