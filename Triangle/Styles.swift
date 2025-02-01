@@ -9,13 +9,16 @@ import SwiftUI
 
 // Define a central color theme
 struct ColorTheme {
-    static let primary = Color(hex: 0x4C708A)
+
+    static let primary = Color(hex: 0x7297B1)
+    static let darker = Color(hex: 0x1D272F)
     static let secondary = Color(hex: 0xDAE8F6)
     static let accent = Color(hex: 0x96B6CF)
     static let background = Color(hex: 0xB5CFE3)
     static let text = Color(hex: 0x4C708A)
     static let lightGray = Color(hex: 0xD9D9D9)
     static let shadowGray = Color.gray.opacity(0.4)
+    static let green = Color(hex: 0x72B1A0)
 }
 
 // Define Montserrat font styles
