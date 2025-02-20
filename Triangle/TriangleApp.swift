@@ -9,10 +9,12 @@ import SwiftUI
 
 @main
 struct TriangleApp: App {
+    @StateObject private var settingsViewModel = SettingsViewModel()
     
     var body: some Scene {
         WindowGroup {
             OnboardingView()
+                .environmentObject(settingsViewModel)
         }
     }
 }
@@ -20,5 +22,6 @@ struct TriangleApp: App {
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
         OnboardingView()
+            .previewInterfaceOrientation(.landscapeLeft)
     }
 }

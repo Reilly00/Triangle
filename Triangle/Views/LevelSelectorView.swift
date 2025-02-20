@@ -195,7 +195,7 @@ struct HexagonShape: View {
                 let globalIndex = (hexIndex * 4) + triIndex + 1
 
                 // Set imageName conditionally based on globalIndex and currentLevelIndex
-                let tapEvent: () -> Void =
+                let _: () -> Void =
                     globalIndex > currentLevelIndex
                     ? {}
                     : {

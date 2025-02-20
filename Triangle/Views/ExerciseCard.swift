@@ -9,6 +9,7 @@ import SwiftUI
 
 
 struct ExerciseCard: View {
+    @EnvironmentObject var settings: SettingsViewModel
     let title: String
     let isLocked: Bool
     let onTap: () -> Void
@@ -27,7 +28,7 @@ struct ExerciseCard: View {
                                     .foregroundColor(.white)
                             } else {
                                 Text(title)
-                                    .font(.montserratHeadline)
+                                    .font(.montserratHeadline(textSize: settings.textSize))
                                     .foregroundColor(.white)
                                     .multilineTextAlignment(.center)
                             }

@@ -9,7 +9,8 @@ import SwiftUI
 
 // Define a central color theme
 struct ColorTheme {
-
+    @EnvironmentObject var settings: SettingsViewModel
+    
     static let primary = Color(hex: 0x7297B1)
     static let darker = Color(hex: 0x1D272F)
     static let secondary = Color(hex: 0xDAE8F6)
@@ -24,9 +25,15 @@ struct ColorTheme {
 // Define Montserrat font styles
 // TODO: Find a way to import variable fonts as this is not working
 extension Font {
-    static let montserratHeadline = Font.custom("Montserrat-Bold", size: 18)
-    static let montserratTitle = Font.custom("Montserrat-Bold", size: 24)
-    static let montserratBody = Font.custom("Montserrat-Regular", size: 16)
+    static func montserratHeadline(textSize: Double) -> Font {
+        Font.custom("Montserrat-Bold", size: 18 * textSize)
+    }
+    static func montserratTitle(textSize: Double) -> Font {
+        Font.custom("Montserrat-Bold", size: 24 * textSize)
+    }
+    static func montserratBody(textSize: Double) -> Font {
+        Font.custom("Montserrat-Regular", size: 16 * textSize)
+    }
 }
 
 struct NavbarButton: ButtonStyle {

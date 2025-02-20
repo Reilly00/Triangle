@@ -48,6 +48,22 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CE2466B62D675128000A477B /* Exceptions for "Triangle" folder in "TriangleTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Fonts/Montserrat-Italic-VariableFont_wght.ttf",
+				"Fonts/Montserrat-VariableFont_wght.ttf",
+			);
+			target = D0A3ED6A2D270C1100123268 /* TriangleTests */;
+		};
+		CE2466B72D675128000A477B /* Exceptions for "Triangle" folder in "TriangleUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Fonts/Montserrat-Italic-VariableFont_wght.ttf",
+				"Fonts/Montserrat-VariableFont_wght.ttf",
+			);
+			target = D0A3ED742D270C1100123268 /* TriangleUITests */;
+		};
 		D0D296602D429E4700EC25C3 /* Exceptions for "Triangle" folder in "Triangle" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -62,6 +78,8 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				D0D296602D429E4700EC25C3 /* Exceptions for "Triangle" folder in "Triangle" target */,
+				CE2466B62D675128000A477B /* Exceptions for "Triangle" folder in "TriangleTests" target */,
+				CE2466B72D675128000A477B /* Exceptions for "Triangle" folder in "TriangleUITests" target */,
 			);
 			path = Triangle;
 			sourceTree = "<group>";

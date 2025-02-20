@@ -12,7 +12,7 @@ struct Navbar: View {
         HStack {
             Spacer()
             HStack(spacing: 16) {
-                NavigationLink(destination: ProfileView()) {
+                NavigationLink(destination: ProfileView().environmentObject(SettingsViewModel())) {
                     ZStack {
                         Circle()
                             .fill(Color.gray.opacity(0.3))

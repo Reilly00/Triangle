@@ -12,6 +12,7 @@ import SwiftUI
 
 
 struct ProfileView: View {
+    @EnvironmentObject var settings: SettingsViewModel
     @State private var progress: Double = 0.75 // Example progress value
     @State private var activities: [String] = [
         "Completed 'Social Cues' exercise",
@@ -29,7 +30,7 @@ struct ProfileView: View {
                             .fill(Color.gray.opacity(0.3))
                             .frame(width: 150, height: 150)
                             .cornerRadius(75)
-                            .overlay(Text("Animated Character Here").font(.montserratBody).foregroundColor(.gray))
+                            .overlay(Text("Animated Character Here").font(.montserratBody(textSize: settings.textSize)).foregroundColor(.gray))
                     }
                     .frame(maxWidth: .infinity)
 
@@ -38,20 +39,20 @@ struct ProfileView: View {
                     // Progress Overview
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Your Progress")
-                            .font(.montserratHeadline)
+                            .font(.montserratHeadline(textSize: settings.textSize))
 
                         ProgressView(value: progress) {
                             Text("Progress: \(Int(progress * 100))%")
-                                .font(.montserratBody)
+                                .font(.montserratBody(textSize: settings.textSize))
                         }
                         .progressViewStyle(LinearProgressViewStyle(tint: ColorTheme.primary))
 
                         HStack {
                             Text("Milestones Achieved:")
-                                .font(.montserratBody)
+                                .font(.montserratBody(textSize: settings.textSize))
                             Spacer()
                             Text("3/5") // Example milestone data
-                                .font(.montserratBody)
+                                .font(.montserratBody(textSize: settings.textSize))
                                 .foregroundColor(ColorTheme.primary)
                         }
                     }
@@ -61,7 +62,7 @@ struct ProfileView: View {
                     // Activity Feed
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Recent Activities")
-                            .font(.montserratHeadline)
+                            .font(.montserratHeadline(textSize: settings.textSize))
 
                         ForEach(activities, id: \ .self) { activity in
                             HStack {
@@ -70,7 +71,7 @@ struct ProfileView: View {
                                     .frame(width: 8, height: 8)
 
                                 Text(activity)
-                                    .font(.montserratBody)
+                                    .font(.montserratBody(textSize: settings.textSize))
                                     .foregroundColor(.secondary)
                             }
                         }
@@ -89,6 +90,7 @@ struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileView()
             .previewDevice("iPad Pro 11-inch")
+            .environmentObject(SettingsViewModel())
     }
 }
 

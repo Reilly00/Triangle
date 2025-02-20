@@ -9,17 +9,18 @@ import SwiftUI
 // TODO: Add privacy policy text and fix UI
 
 struct PrivacyPolicyView: View {
+    @StateObject private var settings = SettingsViewModel()
     @Binding var isPresented: Bool
     
     var body: some View {
         VStack {
             Text("Privacy Policy")
-                .font(.montserratTitle)
+                .font(.montserratTitle(textSize: settings.textSize))
                 .padding()
 
             ScrollView {
                 Text("Here is the detailed privacy policy...")
-                    .font(.montserratBody)
+                    .font(.montserratBody(textSize: settings.textSize))
                     .padding()
             }
 
