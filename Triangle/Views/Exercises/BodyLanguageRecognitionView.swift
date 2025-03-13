@@ -1,68 +1,44 @@
 import SwiftUI
 
 struct BodyLanguageRecognitionView: View {
-    @Environment(\.presentationMode) var presentationMode // ✅ Allows dismissing the view
+    @Environment(\.presentationMode) var presentationMode
     let onComplete: () -> Void
-    @State private var targetBodyLanguage: BodyLanguage
-    @State private var selectedBodyLanguage: BodyLanguage? = nil
-    @State private var isCorrect: Bool? = nil
-    private let availableBodyLanguages: [BodyLanguage]
+    @StateObject var controller: BodyLanguageRecognitionController
 
     init(targetBodyLanguage: BodyLanguage? = nil, onComplete: @escaping () -> Void) {
-        let initialBodyLanguage = targetBodyLanguage ?? BodyLanguage.random()
         self.onComplete = onComplete
-        self._targetBodyLanguage = State(initialValue: initialBodyLanguage)
-
-        // ✅ Pick 2 incorrect random body language poses
-        var otherBodyLanguages = BodyLanguage.allCases.filter { $0 != initialBodyLanguage }.shuffled()
-        let incorrectOptions = Array(otherBodyLanguages.prefix(2))
-
-        // ✅ Ensure the correct body language is included, then shuffle
-        self.availableBodyLanguages = ([initialBodyLanguage] + incorrectOptions).shuffled()
+        _controller = StateObject(wrappedValue: BodyLanguageRecognitionController(targetBodyLanguage: targetBodyLanguage))
     }
-
+    
     var body: some View {
         ZStack {
             Color(hex: 0xB5CFE3)
                 .edgesIgnoringSafeArea(.all)
-
+            
             VStack {
-                Text("Which body language best matches '\(targetBodyLanguage.rawValue)'?")
+                Text("Which body language best matches '\(controller.targetBodyLanguage.rawValue)'?")
                     .font(.system(size: 26, weight: .bold))
                     .foregroundColor(Color(hex: 0x4C708A))
                     .padding(.bottom, 15)
-
-                // ✅ Display choices horizontally (3 images)
-                HStack(spacing: 30) { // 🔹 Increased spacing for better layout
-                    ForEach(availableBodyLanguages, id: \.self) { bodyLanguage in
+                
+                HStack(spacing: 30) {
+                    ForEach(controller.availableBodyLanguages, id: \.self) { bodyLanguage in
                         Button(action: {
-                            selectedBodyLanguage = bodyLanguage
-                            isCorrect = (bodyLanguage == targetBodyLanguage) // ✅ Check against correct body language
-
-                            if isCorrect == true {
-                                onComplete() // ✅ Unlocks next level when correct
-
-                                // ✅ Delay for feedback, then navigate back
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                    presentationMode.wrappedValue.dismiss() // ✅ Automatically return to Level Selector
-                                }
-                            } else {
-                                // ✅ Reset after delay
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                    selectedBodyLanguage = nil
-                                    isCorrect = nil
-                                }
-                            }
+                            controller.checkAnswer(
+                                selected: bodyLanguage,
+                                onComplete: onComplete,
+                                dismiss: { presentationMode.wrappedValue.dismiss() }
+                            )
                         }) {
-                            Image(bodyLanguage.imageName) // ✅ Load correct image
+                            Image(bodyLanguage.imageName)
                                 .resizable()
-                                .scaledToFit() // 🔹 Ensures full image is visible without zooming in
-                                .frame(width: 220, height: 220) // 🔹 Image size
-                                .clipShape(RoundedRectangle(cornerRadius: 15)) // 🔹 Makes images rounded
+                                .scaledToFit()
+                                .frame(width: 220, height: 220)
+                                .clipShape(RoundedRectangle(cornerRadius: 15))
                                 .padding()
                                 .background(
-                                    selectedBodyLanguage == bodyLanguage
-                                        ? (isCorrect == true ? Color(hex: 0x58D68D) : Color(hex: 0xEC7063)) // ✅ Muted colors
+                                    controller.selectedBodyLanguage == bodyLanguage
+                                        ? (controller.isCorrect == true ? Color(hex: 0x58D68D) : Color(hex: 0xEC7063))
                                         : Color(hex: 0x96B6CF)
                                 )
                                 .cornerRadius(15)
@@ -70,8 +46,16 @@ struct BodyLanguageRecognitionView: View {
                         }
                     }
                 }
-                .padding(.top, 30) // 🔹 Adjusted padding to balance the layout
+                .padding(.top, 30)
             }
         }
+    }
+}
+
+struct BodyLanguageRecognitionView_Previews: PreviewProvider {
+    static var previews: some View {
+        BodyLanguageRecognitionView(onComplete: {
+            print("Exercise complete!")
+        })
     }
 }

@@ -2,7 +2,8 @@ import SwiftUI
 
 struct OnboardingView: View {
     @State private var currentForm: FormType = .none
-    @StateObject var loginViewModel = LoginViewViewModel()
+    @StateObject var controller = LoginController()
+    @EnvironmentObject var authManager: AuthenticationManager
 
     enum FormType {
         case none, login, register
@@ -39,21 +40,29 @@ struct OnboardingView: View {
                     VStack(spacing: 16) {
                         if currentForm == .login {
                             VStack {
-                                HStack(spacing:10) {
+                                HStack(spacing: 10) {
                                     Spacer()
-                                    TextField("Username", text: $loginViewModel.username)
-                                        .textFieldStyle(TriangleTextFieldStyle())
+                                    TextField(
+                                        "Username",
+                                        text: $controller.username
+                                    )
+                                    .textFieldStyle(TriangleTextFieldStyle())
                                     Spacer()
                                 }
 
                                 HStack(spacing: 10) {
                                     Spacer()
-                                    SecureField("Password", text: $loginViewModel.password)
-                                        .textFieldStyle(TriangleTextFieldStyle())
+                                    SecureField(
+                                        "Password",
+                                        text: $controller.password
+                                    )
+                                    .textFieldStyle(TriangleTextFieldStyle())
                                     Spacer()
                                 }
 
-                                if let errorMessage = loginViewModel.errorMessage {
+                                if let errorMessage = controller
+                                    .errorMessage
+                                {
                                     Text(errorMessage)
                                         .foregroundColor(.red)
                                         .padding()
@@ -64,9 +73,9 @@ struct OnboardingView: View {
 
                                 HStack(spacing: 10) {
                                     Spacer()
-                                    Button(action: loginViewModel.login) {
+                                    Button(action: controller.login) {
                                         ZStack {
-                                            if loginViewModel.isLoading {
+                                            if controller.isLoading {
                                                 ProgressView()
                                                     .scaleEffect(1.5)
                                             } else {
@@ -77,15 +86,20 @@ struct OnboardingView: View {
                                             }
                                         }
                                     }
-                                    .animation(.easeInOut(duration: 0.3), value: loginViewModel.isLoading)
+                                    .animation(
+                                        .easeInOut(duration: 0.3),
+                                        value: controller.isLoading
+                                    )
                                     .buttonStyle(TrianglePrimaryButton())
-                                    .disabled(loginViewModel.isLoading)
+                                    .disabled(controller.isLoading)
                                     Spacer()
                                 }
                             }
-                            // ✅ Navigation when login is successful
-                            .navigationDestination(isPresented: $loginViewModel.navigateToDashboard) {
-                                DashboardView()
+                            .navigationDestination(
+                                isPresented: $controller.navigateToDashboard
+                            ) {
+                                ContentView()
+                                    .environmentObject(NavbarVisibility())
                             }
                         } else if currentForm == .register {
                             RegisterForm()
@@ -106,15 +120,20 @@ struct OnboardingView: View {
                                 }
 
                                 VStack {
-                                    LabelledDivider(label: "or", horizontalPadding: 20, color: Color.white)
-                                        .frame(height: 1)
+                                    LabelledDivider(
+                                        label: "or", horizontalPadding: 20,
+                                        color: Color.white
+                                    )
+                                    .frame(height: 1)
                                 }
                                 .padding(.horizontal, 400)
 
                                 HStack(spacing: 300) {
                                     Spacer()
                                     Button(action: {
-                                        withAnimation { currentForm = .register }
+                                        withAnimation {
+                                            currentForm = .register
+                                        }
                                     }) {
                                         Text("Create an account")
                                             .frame(maxWidth: .infinity)
@@ -132,16 +151,19 @@ struct OnboardingView: View {
                 .animation(.easeInOut, value: currentForm)
             }
         }
+        .onAppear {
+            controller.authManager = authManager
+        }
     }
+
 }
 
-// ✅ Login Form
 struct LoginForm: View {
-    @StateObject var viewModel = LoginViewViewModel()
+    @StateObject var controller = LoginController()
 
     var body: some View {
         VStack(spacing: 16) {
-            if let errorMessage = viewModel.errorMessage {
+            if let errorMessage = controller.errorMessage {
                 Text(errorMessage)
                     .font(.body)
                     .foregroundColor(.red)
@@ -154,23 +176,23 @@ struct LoginForm: View {
 
             HStack(spacing: 10) {
                 Spacer()
-                TextField("Username", text: $viewModel.username)
+                TextField("Username", text: $controller.username)
                     .textFieldStyle(TriangleTextFieldStyle())
                 Spacer()
             }
 
             HStack(spacing: 10) {
                 Spacer()
-                SecureField("Password", text: $viewModel.password)
+                SecureField("Password", text: $controller.password)
                     .textFieldStyle(TriangleTextFieldStyle())
                 Spacer()
             }
 
             HStack(spacing: 10) {
                 Spacer()
-                Button(action: viewModel.login) {
+                Button(action: controller.login) {
                     ZStack {
-                        if viewModel.isLoading {
+                        if controller.isLoading {
                             ProgressView()
                                 .scaleEffect(1.5)
                         } else {
@@ -181,9 +203,11 @@ struct LoginForm: View {
                         }
                     }
                 }
-                .animation(.easeInOut(duration: 0.3), value: viewModel.isLoading)
+                .animation(
+                    .easeInOut(duration: 0.3), value: controller.isLoading
+                )
                 .buttonStyle(TrianglePrimaryButton())
-                .disabled(viewModel.isLoading)
+                .disabled(controller.isLoading)
                 Spacer()
             }
         }
@@ -193,11 +217,11 @@ struct LoginForm: View {
 
 // ✅ Register Form
 struct RegisterForm: View {
-    @StateObject var viewModel = RegisterViewViewModel()
+    @StateObject var controller = RegisterController()
 
     var body: some View {
         VStack(spacing: 16) {
-            if let errorMessage = viewModel.errorMessage {
+            if let errorMessage = controller.errorMessage {
                 Text(errorMessage)
                     .font(.body)
                     .foregroundColor(.red)
@@ -210,37 +234,39 @@ struct RegisterForm: View {
 
             HStack(spacing: 10) {
                 Spacer()
-                TextField("Username", text: $viewModel.username)
+                TextField("Username", text: $controller.username)
                     .textFieldStyle(TriangleTextFieldStyle())
                 Spacer()
             }
 
             HStack(spacing: 10) {
                 Spacer()
-                TextField("Email", text: $viewModel.email)
+                TextField("Email", text: $controller.email)
                     .textFieldStyle(TriangleTextFieldStyle())
                 Spacer()
             }
 
             HStack(spacing: 10) {
                 Spacer()
-                SecureField("Password", text: $viewModel.password)
+                SecureField("Password", text: $controller.password)
                     .textFieldStyle(TriangleTextFieldStyle())
                 Spacer()
             }
 
             HStack(spacing: 10) {
                 Spacer()
-                SecureField("Confirm Password", text: $viewModel.confirmPassword)
-                    .textFieldStyle(TriangleTextFieldStyle())
+                SecureField(
+                    "Confirm Password", text: $controller.confirmPassword
+                )
+                .textFieldStyle(TriangleTextFieldStyle())
                 Spacer()
             }
 
             HStack(spacing: 10) {
                 Spacer()
-                Button(action: viewModel.register) {
+                Button(action: controller.register) {
                     ZStack {
-                        if viewModel.isLoading {
+                        if controller.isLoading {
                             ProgressView()
                         } else {
                             Text("Create Account")
@@ -250,9 +276,11 @@ struct RegisterForm: View {
                         }
                     }
                 }
-                .animation(.easeInOut(duration: 0.3), value: viewModel.isLoading)
+                .animation(
+                    .easeInOut(duration: 0.3), value: controller.isLoading
+                )
                 .buttonStyle(TrianglePrimaryButton())
-                .disabled(viewModel.isLoading)
+                .disabled(controller.isLoading)
                 Spacer()
             }
         }
@@ -260,20 +288,21 @@ struct RegisterForm: View {
     }
 }
 
-// ✅ Preview
 struct OnboardingView_Previews: PreviewProvider {
     static var previews: some View {
         OnboardingView()
     }
 }
 
-// ✅ Labelled Divider
 struct LabelledDivider: View {
     let label: String
     let horizontalPadding: CGFloat
     let color: Color
 
-    init(label: String, horizontalPadding: CGFloat = 8, color: Color = Color(UIColor.separator)) {
+    init(
+        label: String, horizontalPadding: CGFloat = 8,
+        color: Color = Color(UIColor.separator)
+    ) {
         self.label = label
         self.horizontalPadding = horizontalPadding
         self.color = color
@@ -293,6 +322,7 @@ struct LabelledDivider: View {
     }
 
     var line: some View {
-        VStack { Divider().frame(height: 1).background(color) }.padding(horizontalPadding)
+        VStack { Divider().frame(height: 1).background(color) }.padding(
+            horizontalPadding)
     }
 }

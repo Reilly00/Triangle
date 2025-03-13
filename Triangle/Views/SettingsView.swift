@@ -7,145 +7,180 @@
 
 import SwiftUI
 
-// TODO: Implement the logic for buttons and sliders
-// Currently the sliders and buttons just print out the new values which is fine for now
-
 struct SettingsView: View {
-    @State private var musicVolume: Double = 0.5
-    @State private var sfxVolume: Double = 0.5
-    @State private var textSize: Double = 1.0
-    @State private var selectedLanguage: String = "English"
+    @EnvironmentObject var userDataStore: UserDataStore
+    @EnvironmentObject var authManager: AuthenticationManager
+    @StateObject var settingsController: SettingsController
     @State private var showPrivacyPolicy: Bool = false
 
-    let languages = ["English", "Czech", "Spanish"]
+    init(settingsController: SettingsController) {
+        _settingsController = StateObject(wrappedValue: settingsController)
+    }
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    // Account
-                    Group {
-                        Text("Account")
-                            .font(.montserratHeadline)
-                        Button("Update Email") {
-                            print("Update Email button tapped")
+            if let settings = userDataStore.userData?.settings {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        // Account Section
+                        Group {
+                            Text("Account")
+                                .font(.pageTitle)
+                            Button("Update Email") {
+                                print("Update Email button tapped")
+                            }
+                            .buttonStyle(TrianglePrimaryButton())
+
+                            Button("Change Password") {
+                                print("Change Password button tapped")
+                            }
+                            .buttonStyle(TrianglePrimaryButton())
+                            Button("Log Out") {
+                                print("Log Out button tapped")
+                                authManager.logout(userDataStore: userDataStore)
+                            }
+                            .buttonStyle(TrianglePrimaryButton())
                         }
-                        .buttonStyle(TrianglePrimaryButton())
 
-                        Button("Change Password") {
-                            print("Change Password button tapped")
-                        }
-                        .buttonStyle(TrianglePrimaryButton())
-                    }
+                        Divider()
 
-                    Divider()
-
-                    // Accessibility
-                    Group {
-                        Text("Accessibility")
-                            .font(.montserratHeadline)
-
-                        VStack(alignment: .leading) {
-                            Text("Text Size")
-                                .font(.montserratBody)
-                            Slider(value: $textSize, in: 0.8...1.5, step: 0.1) {
+                        // Accessibility Section
+                        Group {
+                            Text("Accessibility")
+                                .font(.pageTitle)
+                            VStack(alignment: .leading) {
                                 Text("Text Size")
-                            }
-                            .onChange(of: textSize, initial: true) { oldValue, newValue in
-                                print("Text size updated to: \(newValue)")
+                                    .font(.bodyText)
+                                Slider(
+                                    value: Binding(
+                                        get: { settings.textSize },
+                                        set: { newValue in
+                                            settingsController.updateTextSize(
+                                                newValue)
+                                        }
+                                    ),
+                                    in: 0.8...1.5,
+                                    step: 0.1,
+                                    label: { Text("Text Size") }
+                                )
                             }
                         }
-                    }
 
-                    Divider()
+                        Divider()
 
-                    // Sound
-                    Group {
-                        Text("Sound")
-                            .font(.montserratHeadline)
-
-                        VStack(alignment: .leading) {
-                            Text("Music Volume")
-                                .font(.montserratBody)
-                            Slider(value: $musicVolume, in: 0...1, step: 0.1) {
+                        // Sound Section
+                        Group {
+                            Text("Sound")
+                                .font(.pageTitle)
+                            VStack(alignment: .leading) {
                                 Text("Music Volume")
-                            }
-                            .onChange(of: musicVolume, initial: true) { oldValue, newValue in
-                                print("Music volume updated to: \(newValue)")
-                            }
+                                    .font(.bodyText)
+                                Slider(
+                                    value: Binding(
+                                        get: { settings.musicVolume },
+                                        set: { newValue in
+                                            settingsController.updateMusicVolume(
+                                                newValue)
+                                        }
+                                    ),
+                                    in: 0...1,
+                                    step: 0.1,
+                                    label: { Text("Music Volume") }
+                                )
 
-                            Text("SFX Volume")
-                                .font(.montserratBody)
-                            Slider(value: $sfxVolume, in: 0...1, step: 0.1) {
                                 Text("SFX Volume")
-                            }
-                            .onChange(of: sfxVolume, initial: true) { oldValue, newValue in
-                                print("SFX volume updated to: \(newValue)")
+                                    .font(.bodyText)
+                                Slider(
+                                    value: Binding(
+                                        get: { settings.sfxVolume },
+                                        set: { newValue in
+                                            settingsController.updateSFXVolume(
+                                                newValue)
+                                        }
+                                    ),
+                                    in: 0...1,
+                                    step: 0.1,
+                                    label: { Text("SFX Volume") }
+                                )
                             }
                         }
-                    }
 
-                    Divider()
+                        Divider()
 
-                    // General
-                    Group {
-                        Text("General")
-                            .font(.montserratHeadline)
+                        // General Section
+                        Group {
+                            Text("General")
+                                .font(.pageTitle)
+                            VStack(alignment: .leading) {
+                                Text("Language")
+                                    .font(.bodyText)
+                                Picker(
+                                    "Language",
+                                    selection: Binding(
+                                        get: { settings.selectedLanguage },
+                                        set: { newValue in
+                                            settingsController.updateLanguage(
+                                                newValue)
+                                        }
+                                    )
+                                ) {
+                                    ForEach(
+                                        settingsController.languages, id: \.self
+                                    ) { language in
+                                        Text(language)
+                                    }
+                                }
+                                .pickerStyle(MenuPickerStyle())
 
-                        VStack(alignment: .leading) {
-                            Text("Language")
-                                .font(.montserratBody)
-                            Picker("Language", selection: $selectedLanguage) {
-                                ForEach(languages, id: \ .self) { language in
-                                    Text(language)
+                                Button("Reset Progress") {
+                                    settingsController.resetProgress()
+                                }
+                                .buttonStyle(TriangleSecondaryButton())
+                            }
+                        }
+
+                        Divider()
+
+                        // App Info Section
+                        Group {
+                            Text("App Info")
+                                .font(.pageTitle)
+                            VStack(alignment: .leading) {
+                                Text("Version: 1.0.0")
+                                    .font(.bodyText)
+                                Button("Privacy Policy") {
+                                    showPrivacyPolicy = true
+                                }
+                                .buttonStyle(TriangleSecondaryButton())
+                                .sheet(isPresented: $showPrivacyPolicy) {
+                                    PrivacyPolicyView(
+                                        isPresented: $showPrivacyPolicy)
                                 }
                             }
-                            .pickerStyle(MenuPickerStyle())
-                            .onChange(of: selectedLanguage, initial: true) { oldValue, newValue in
-                                print("Language changed to: \(newValue)")
-                            }
-
-                            Button("Reset Progress") {
-                                print("Reset Progress button tapped")
-                            }
-                            .buttonStyle(TriangleSecondaryButton())
                         }
                     }
-
-                    Divider()
-
-                    // App Info
-                    Group {
-                        Text("App Info")
-                            .font(.montserratHeadline)
-
-                        VStack(alignment: .leading) {
-                            Text("Version: 1.0.0")
-                                .font(.montserratBody)
-                            Button("Privacy Policy") {
-                                print("Privacy Policy button tapped")
-                                showPrivacyPolicy = true
-                            }
-                            .buttonStyle(TriangleSecondaryButton())
-                            .sheet(isPresented: $showPrivacyPolicy) {
-                                PrivacyPolicyView(isPresented: $showPrivacyPolicy)
-                            }
-                        }
-                    }
+                    .padding()
                 }
-                .padding()
+                .background(ColorTheme.background)
+                .toolbarBackground(.hidden, for: .navigationBar)
+            } else {
+                // Loading state if userData is not yet available
+                ProgressView("Loading...")
             }
-            .background(ColorTheme.background)
-            .toolbarBackground(.hidden, for: .navigationBar)
         }
     }
 }
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
+        let userDataStore = UserDataStore(userId: "previewUser")
+        userDataStore.userData = userDataStore.loadUserData(for: "previewUser")
+        let settingsController = SettingsController(
+            userDataStore: userDataStore)
+
+        return SettingsView(settingsController: settingsController)
+            .environmentObject(userDataStore)
             .previewDevice("iPad Pro 11-inch")
             .previewInterfaceOrientation(.landscapeLeft)
     }
 }
-

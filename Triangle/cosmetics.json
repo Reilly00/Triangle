@@ -1,0 +1,86 @@
+{
+    "headCosmetics": [
+        {
+            "cosmeticId": 1,
+            "assetName": "hc_none",
+            "relativeScale": 0,
+            "offsetXRatio": 0,
+            "offsetYRatio": 0,
+            "rotation": 0
+        },
+        {
+            "cosmeticId": 2,
+            "assetName": "hc_beanie",
+            "relativeScale": 0.45,
+            "offsetXRatio": 0.0,
+            "offsetYRatio": -0.25,
+            "rotation": 0
+        },
+        {
+            "cosmeticId": 3,
+            "assetName": "hc_tophat",
+            "relativeScale": 0.46,
+            "offsetXRatio": 0.0,
+            "offsetYRatio": -0.33,
+            "rotation": 0
+        },
+        {
+            "cosmeticId": 4,
+            "assetName": "hc_partyhat",
+            "relativeScale": 0.45,
+            "offsetXRatio": 0,
+            "offsetYRatio": -0.36,
+            "rotation": 0
+        },
+    ],
+    "eyeCosmetics": [
+        {
+            "cosmeticId": 1,
+            "assetName": "ec_none",
+            "relativeScale": 0,
+            "offsetXRatio": 0,
+            "offsetYRatio": 0
+        },
+        {
+            "cosmeticId": 2,
+            "assetName": "ec_sunglasses",
+            "relativeScale": 0.45,
+            "offsetXRatio": 0.0,
+            "offsetYRatio": 0
+        },
+        {
+            "cosmeticId": 3,
+            "assetName": "ec_perscription",
+            "relativeScale": 0.44,
+            "offsetXRatio": 0,
+            "offsetYRatio": -0.005
+        },
+        {
+            "cosmeticId": 4,
+            "assetName": "ec_ninjamask",
+            "relativeScale": 0.645,
+            "offsetXRatio": 0,
+            "offsetYRatio": -0.005
+        }
+    ],
+    "mouthCosmetics": [
+        {
+            "cosmeticId": 1,
+            "assetName": "mouth_default"
+        },
+        {
+            "cosmeticId": 2,
+            "assetName": "mouth_smile"
+        }
+    ],
+    "colorCosmetics": [
+        {
+            "cosmeticId": 1,
+            "colorHex": "#0000FF"
+        },
+        {
+            "cosmeticId": 2,
+            "colorHex": "#FF0000"
+        }
+    ]
+}

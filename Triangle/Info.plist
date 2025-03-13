@@ -7,5 +7,15 @@
 		<string>Montserrat-Italic-VariableFont_wght.ttf</string>
 		<string>Montserrat-VariableFont_wght.ttf</string>
 	</array>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UILaunchScreen</key>
+		<dict>
+			<key>Background color</key>
+			<string>LaunchScreenBackgroundColor</string>
+			<key>Image Name</key>
+			<string>launchscreen</string>
+		</dict>
+	</dict>
 </dict>
 </plist>

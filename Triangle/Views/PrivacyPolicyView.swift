@@ -14,12 +14,12 @@ struct PrivacyPolicyView: View {
     var body: some View {
         VStack {
             Text("Privacy Policy")
-                .font(.montserratTitle)
+                .font(.pageTitle)
                 .padding()
 
             ScrollView {
                 Text("Here is the detailed privacy policy...")
-                    .font(.montserratBody)
+                    .font(.bodyText)
                     .padding()
             }
 
