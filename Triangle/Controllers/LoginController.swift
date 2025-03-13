@@ -7,43 +7,58 @@
 
 import Foundation
 import SwiftUI
-
+import CloudKit
 class LoginController: ObservableObject {
     @Published var username: String = ""
     @Published var password: String = ""
+    @Published var isICloudAvailable: Bool = false
     @Published var errorMessage: String?
     @Published var isLoading: Bool = false
     @Published var navigateToDashboard: Bool = false
-
+    
     var authManager: AuthenticationManager?
 
+    private let cloudKitManager = CloudKitManager.shared
+
+    init() {
+        checkiCloudAvailability()
+    }
+
+    func checkiCloudAvailability() {
+        cloudKitManager.checkiCloudStatus { [weak self] available in
+            DispatchQueue.main.async {
+                self?.isICloudAvailable = available
+            }
+        }
+    }
+
     func login() {
-        errorMessage = nil
+        guard !username.isEmpty, !password.isEmpty else {
+            errorMessage = "Username and password cannot be empty."
+            return
+        }
+
         isLoading = true
 
-        // Simulate an asynchronous login -> no backend :(
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            let defaults = UserDefaults.standard
-            let registeredUsers =
-                defaults.dictionary(forKey: "registeredUsers")
-                as? [String: [String: String]] ?? [:]
-
-            guard let userData = registeredUsers[self.username] else {
-                self.errorMessage = "User not found."
+        cloudKitManager.fetchUserForLogin(username: username, password: password) { success, record, error in
+            DispatchQueue.main.async {
                 self.isLoading = false
-                return
-            }
 
-            if let storedPassword = userData["password"],
-                storedPassword == self.password
-            {
-                self.authManager?.login(withUserId: self.username)
-                self.navigateToDashboard = true
-                print(self.authManager?.currentUserId ?? "No user logged in")
-            } else {
-                self.errorMessage = "Invalid password."
+                if let error = error
+                {
+                    self.errorMessage = "Login failed: \(error.localizedDescription)"
+                } else if success
+                {
+                    self.errorMessage = nil
+                    print("✅ Login successful - Navigating to Dashboard")
+                    self.authManager?.login(withUserId: self.username)
+                    self.navigateToDashboard = true
+                } else {
+                    print(self.authManager?.currentUserId ?? "No user logged in")
+                    self.errorMessage = "Invalid username or password."
+                }
             }
-            self.isLoading = false
         }
     }
 }
+
