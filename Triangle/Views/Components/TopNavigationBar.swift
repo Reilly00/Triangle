@@ -11,30 +11,50 @@ struct TopNavigationBar: View {
     let title: String
     let onBack: (() -> Void)?
 
+    @EnvironmentObject var userDataStore: UserDataStore
+
     var body: some View {
-        HStack {
-            if let onBack = onBack {
-                Button(action: {
-                    onBack()
-                }) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 32, weight: .black))
-                        .foregroundColor(ColorTheme.text)
-                }
-                .padding(.leading, 16)
-            } else {
-                // A placeholder to maintain spacing
-                Spacer().frame(width: 44)
-            }
-
-            Spacer()
-
+        ZStack {
+            // Title
             Text(title)
                 .font(.pageTitle)
                 .foregroundColor(ColorTheme.text)
-                .frame(maxWidth: .infinity, alignment: .center)
 
-            Spacer().frame(width: 44)
+            // Left and Right controls
+            HStack {
+                if let onBack = onBack {
+                    Button(action: onBack) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 32, weight: .black))
+                            .foregroundColor(ColorTheme.text)
+                    }
+                    .padding(.leading, 16)
+                } else {
+                    Spacer().frame(width: 44)
+                }
+
+                Spacer()
+
+                // Currency indicator
+                ZStack {
+                    Rectangle()
+                        .frame(maxWidth: 150, maxHeight: 70)
+                        .cornerRadius(30)
+                        .foregroundColor(ColorTheme.primary)
+                    HStack(spacing: 5) {
+                        Text(
+                            "\(userDataStore.userData?.inventory.currency ?? 0)"
+                        )
+                        .font(.shopCardTitle)
+                        .foregroundColor(ColorTheme.currencyColor)
+                        Image("currency_icon")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 28, height: 28)
+                    }
+                }
+                .padding(.trailing, 16)
+            }
         }
         .frame(height: 100)
         .background(ColorTheme.background)
@@ -42,6 +62,10 @@ struct TopNavigationBar: View {
 }
 
 #Preview {
-    TopNavigationBar(title: "Page Title", onBack: ({} as () -> Void))
-    TopNavigationBar(title: "Page Title", onBack: nil)
+    Group {
+        TopNavigationBar(title: "Page Title", onBack: {})
+            .environmentObject(UserDataStore(userId: "guest"))
+        TopNavigationBar(title: "Page Title", onBack: nil)
+            .environmentObject(UserDataStore(userId: "guest"))
+    }
 }

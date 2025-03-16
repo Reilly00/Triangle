@@ -7,20 +7,28 @@
 
 import SwiftUI
 
-struct HeadCosmetic: Codable, Equatable {
+struct HeadCosmetic: Codable, Equatable, Cosmetic {
     var cosmeticId: Int
     var assetName: String
-    var relativeScale: CGFloat   // Now a relative value (e.g., 0.3)
-    var offsetXRatio: CGFloat    // Relative horizontal offset (percentage of width)
-    var offsetYRatio: CGFloat    // Relative vertical offset (percentage of height)
+    var cosmeticTitle: String
+    var relativeScale: CGFloat
+    var offsetXRatio: CGFloat
+    var offsetYRatio: CGFloat
     var rotation: CGFloat
+    var price: Int
+
+    var uniqueId: String {
+        return "head_\(cosmeticId)"
+    }
 
     static let defaultCosmetic = HeadCosmetic(
         cosmeticId: 1,
         assetName: "hc_none",
+        cosmeticTitle: "None",
         relativeScale: 0,
         offsetXRatio: 0,
         offsetYRatio: 0,
-        rotation: 0
+        rotation: 0,
+        price: 0
     )
 }

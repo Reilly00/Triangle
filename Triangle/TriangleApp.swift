@@ -73,6 +73,7 @@ struct RootView: View {
 struct TriangleApp_Previews: PreviewProvider {
     static var previews: some View {
         RootView()
+            .environmentObject(UserDataStore(userId: "guest"))
             .environmentObject(AuthenticationManager())
     }
 }

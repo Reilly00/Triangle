@@ -10,12 +10,12 @@ import SwiftUI
 final class UserDataStore: ObservableObject {
     @Published var userData: UserData?
     @Published var cosmeticCatalog: CosmeticCatalog?
-    @EnvironmentObject var authManager: AuthenticationManager
     private var userId: String
 
     init(userId: String) {
         self.userId = userId
         self.userData = nil
+        self.cosmeticCatalog = loadCosmeticCatalog()
     }
 
     func updateUserId(_ newUserId: String) {
@@ -95,8 +95,7 @@ final class UserDataStore: ObservableObject {
             musicVolume: 0.5, sfxVolume: 0.5, textSize: 1.0,
             selectedLanguage: "English")
         let defaultProgress = ProgressData()
-        let defaultInventory = InventoryData(
-            currency: 0, unlockedCosmetics: [])
+        let defaultInventory = InventoryData.defaultInventory
         let defaultCharacter: CharacterData = .defaultCharacter
         return UserData(
             settings: defaultSettings, progress: defaultProgress,
@@ -194,6 +193,109 @@ final class UserDataStore: ObservableObject {
             return exerciseProgress.currentLevelId
         }
         return 1
+    }
+
+    /// Returns up to 4 random unique cosmetic items from the entire catalog (head + eye).
+    func getRandomCosmetics(count: Int = 4) -> [any Cosmetic] {
+        // Ensure the catalog is loaded.
+        guard let catalog = cosmeticCatalog else {
+            print("No cosmetic catalog loaded.")
+            return []
+        }
+
+        // Combine head and eye cosmetics into a single array.
+        let allCosmetics: [any Cosmetic] =
+            catalog.headCosmetics + catalog.eyeCosmetics
+
+        // Initialize the set with the "none" cosmetics so that they are not being chosen
+        var seenIds: Set<String> = ["eye_1", "head_1"]
+        seenIds.insert("eye_1")
+        seenIds.insert("head_1")
+        let noDuplicates = allCosmetics.filter { cosmetic in
+            let id = cosmetic.uniqueId
+            if seenIds.contains(id) {
+                return false
+            } else {
+                seenIds.insert(id)
+                return true
+            }
+        }
+
+        // Shuffle the filtered array so items are in random order.
+        let shuffled = noDuplicates.shuffled()
+
+        // Return up to the specified count.
+        return Array(shuffled.prefix(count))
+    }
+
+    /// Attempts to purchase the given cosmetic.
+    func buyCosmetic(_ cosmetic: any Cosmetic) {
+        // Ensure that the user's inventory exists.
+        guard var inventory = userData?.inventory else {
+            print("User inventory is not available.")
+            return
+        }
+
+        // Process a head cosmetic.
+        if let headCosmetic = cosmetic as? HeadCosmetic {
+            let price = headCosmetic.price
+
+            // Check if already unlocked.
+            if inventory.unlockedCosmetics.headCosmetics.contains(where: {
+                $0.uniqueId == headCosmetic.uniqueId
+            }) {
+                print(
+                    "Head cosmetic '\(headCosmetic.cosmeticTitle)' is already unlocked."
+                )
+                return
+            }
+
+            // Check currency.
+            if inventory.currency < price {
+                print(
+                    "Not enough currency to purchase head cosmetic. Needed: \(price), available: \(inventory.currency)."
+                )
+                return
+            }
+
+            // Deduct currency and add the cosmetic.
+            inventory.currency -= price
+            inventory.unlockedCosmetics.headCosmetics.append(headCosmetic)
+            updateInventory(inventory)
+            print("Purchased head cosmetic: \(headCosmetic.cosmeticTitle)")
+
+            // Process an eye cosmetic.
+        } else if let eyeCosmetic = cosmetic as? EyeCosmetic {
+            let price = eyeCosmetic.price
+
+            // Check if already unlocked.
+            if inventory.unlockedCosmetics.eyeCosmetics.contains(where: {
+                $0.uniqueId == eyeCosmetic.uniqueId
+            }) {
+                print(
+                    "Eye cosmetic '\(eyeCosmetic.cosmeticTitle)' is already unlocked."
+                )
+                return
+            }
+
+            // Check currency.
+            if inventory.currency < price {
+                print(
+                    "Not enough currency to purchase eye cosmetic. Needed: \(price), available: \(inventory.currency)."
+                )
+                return
+            }
+
+            // Deduct currency and add the cosmetic.
+            inventory.currency -= price
+            inventory.unlockedCosmetics.eyeCosmetics.append(eyeCosmetic)
+            updateInventory(inventory)
+            print("Purchased eye cosmetic: \(eyeCosmetic.cosmeticTitle)")
+
+        } else {
+            print("Unsupported cosmetic type.")
+            return
+        }
     }
 
     /// Saves the current userData to persistent storage.

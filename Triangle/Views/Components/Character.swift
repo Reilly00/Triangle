@@ -21,6 +21,22 @@ struct Character: View {
                         .frame(width: frameSize, height: frameSize)
                         .clipped()
 
+                    // HEAD COSMETIC
+                    Image(characterData.headCosmetic.assetName)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .rotationEffect(
+                            Angle(degrees: characterData.headCosmetic.rotation),
+                            anchor: .center
+                        )
+                        .scaleEffect(characterData.headCosmetic.relativeScale)
+                        .offset(
+                            x: frameSize
+                                * characterData.headCosmetic.offsetXRatio,
+                            y: frameSize
+                                * characterData.headCosmetic.offsetYRatio
+                        )
+
                     // EYE COSMETIC
                     Image(characterData.eyeCosmetic.assetName)
                         .resizable()
@@ -31,20 +47,6 @@ struct Character: View {
                                 * characterData.eyeCosmetic.offsetXRatio,
                             y: frameSize
                                 * characterData.eyeCosmetic.offsetYRatio
-                        )
-
-                    // HEAD COSMETIC
-                    Image(characterData.headCosmetic.assetName)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .rotationEffect(
-                            Angle(degrees: characterData.headCosmetic.rotation), anchor: .center)
-                        .scaleEffect(characterData.headCosmetic.relativeScale)
-                        .offset(
-                            x: frameSize
-                                * characterData.headCosmetic.offsetXRatio,
-                            y: frameSize
-                                * characterData.headCosmetic.offsetYRatio
                         )
                 }
                 // Center the ZStack in the container.

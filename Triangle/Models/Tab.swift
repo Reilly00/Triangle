@@ -9,13 +9,13 @@ import Foundation
 import SwiftUI
 
 enum Tab: Int, CaseIterable {
-    case leaderboard = 0
+    case shop = 0
     case dashboard = 1
     case profile = 2
 
     var title: String {
         switch self {
-        case .leaderboard: return "Leaderboard"
+        case .shop: return "Shop"
         case .dashboard: return "Dashboard"
         case .profile: return "Profile"
         }
@@ -23,7 +23,7 @@ enum Tab: Int, CaseIterable {
 
     var icon: String {
         switch self {
-        case .leaderboard: return "globe"
+        case .shop: return "cart.fill"
         case .dashboard: return "gamecontroller.fill"
         case .profile: return "person.fill"
         }

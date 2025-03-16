@@ -35,59 +35,59 @@ struct DashboardView: View {
 
     var body: some View {
         NavigationStack(path: $navigationPath) {
-            ScrollView {
-                VStack {
-                    // Define your exercise definitions.
-                    let exercises: [(id: Int, totalLevels: Int)] = [
-                        (1, 8), (2, 8), (3, 8), (4, 8),
-                    ]
+            VStack(spacing: 0) {
+                TopNavigationBar(title: "Dashboard", onBack: nil)
+                ScrollView {
+                    VStack {
+                        // Define your exercise definitions.
+                        let exercises: [(id: Int, totalLevels: Int)] = [
+                            (1, 8), (2, 8), (3, 8), (4, 8),
+                        ]
 
-                    LazyVGrid(
-                        columns: [
-                            GridItem(.flexible()), GridItem(.flexible()),
-                        ],
-                        spacing: 40
-                    ) {
-                        ForEach(exercises, id: \.id) { exercise in
-                            let info = dashboardController.getExerciseInfo(
-                                forExerciseId: exercise.id,
-                                totalLevels: exercise.totalLevels
-                            )
-                            DashboardCard(
-                                title: titleForExercise(
-                                    exerciseId: exercise.id),
-                                imageNames: imageNamesForExercise(
-                                    exerciseId: exercise.id),
-                                progress: info.progress,
-                                currentExercise: info.currentLevel,
-                                locked: isExerciseLocked(
-                                    exerciseId: exercise.id,
-                                    currentLevel: info.currentLevel
-                                ),
-                                action: {
-                                    // When a dashboard card is tapped, create parameters and push a levelTransition destination.
-                                    let params = ExerciseParameters(
-                                        id: exercise.id,
-                                        totalTriangles: exercise.totalLevels,
-                                        currentLevelIndex: info.currentLevel
-                                    )
-                                    navigationPath.append(
-                                        DashboardDestination.levelTransition(
-                                            params))
-                                }
-                            )
+                        LazyVGrid(
+                            columns: [
+                                GridItem(.flexible()), GridItem(.flexible()),
+                            ],
+                            spacing: 10
+                        ) {
+                            ForEach(exercises, id: \.id) { exercise in
+                                let info = dashboardController.getExerciseInfo(
+                                    forExerciseId: exercise.id,
+                                    totalLevels: exercise.totalLevels
+                                )
+                                DashboardCard(
+                                    title: titleForExercise(
+                                        exerciseId: exercise.id),
+                                    imageNames: imageNamesForExercise(
+                                        exerciseId: exercise.id),
+                                    progress: info.progress,
+                                    currentExercise: info.currentLevel,
+                                    locked: isExerciseLocked(
+                                        exerciseId: exercise.id,
+                                        currentLevel: info.currentLevel
+                                    ),
+                                    action: {
+                                        let params = ExerciseParameters(
+                                            id: exercise.id,
+                                            totalTriangles: exercise
+                                                .totalLevels,
+                                            currentLevelIndex: info.currentLevel
+                                        )
+                                        navigationPath.append(
+                                            DashboardDestination.levelTransition(
+                                                params)
+                                        )
+                                    }
+                                )
+                            }
                         }
+                        .frame(maxWidth: .infinity)
                     }
-                    .frame(maxWidth: .infinity)
+                    .padding()
                 }
-                .padding(20)
             }
-            .onAppear {
-                navbarVisibility.isVisible = true
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(hex: 0xB5CFE3))
-            .edgesIgnoringSafeArea(.all)
+            // Hide the system navigation bar.
+            .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: DashboardDestination.self) {
                 destination in
                 switch destination {
@@ -109,6 +109,7 @@ struct DashboardView: View {
                     .environmentObject(navbarVisibility)
                 }
             }
+            .background(Color(hex: 0xB5CFE3))
         }
     }
 

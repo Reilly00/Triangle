@@ -59,11 +59,11 @@ struct Navbar: View {
             VStack(spacing: 16) {
                 HStack(spacing: -20) {
                     // Leaderboard Button
-                    Button(action: { selectedTab = .leaderboard }) {
+                    Button(action: { selectedTab = .shop }) {
                         ZStack {
                             TriangleShape()
                                 .fill(
-                                    selectedTab == .leaderboard
+                                    selectedTab == .shop
                                         ? ColorTheme.accent : ColorTheme.text
                                 )
                                 .frame(width: 110, height: 100)
@@ -71,17 +71,17 @@ struct Navbar: View {
 
                             TriangleShape()
                                 .fill(
-                                    selectedTab == .leaderboard
+                                    selectedTab == .shop
                                         ? ColorTheme.secondary
                                         : ColorTheme.primary
                                 )
                                 .frame(width: 110, height: 100)
                                 .rotationEffect(.degrees(0))
 
-                            Image(systemName: Tab.leaderboard.icon)
+                            Image(systemName: Tab.shop.icon)
                                 .font(.system(size: 100 * 0.4))
                                 .foregroundColor(
-                                    selectedTab == .leaderboard
+                                    selectedTab == .shop
                                         ? ColorTheme.text
                                         : ColorTheme.background
                                 )

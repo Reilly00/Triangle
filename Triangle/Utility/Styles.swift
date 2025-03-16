@@ -21,6 +21,7 @@ struct ColorTheme {
     static let completedLevelColor = Color(hex: 0x72B1A0)
     static let currentLevelColor = Color(hex: 0x229374)
     static let lockedLevelColor = Color(hex: 0x7297B1).opacity(0.5)
+    static let currencyColor = Color(hex:0xFFD145)
 }
 
 // MARK: - Font Styles (Dynamic Type Ready)
@@ -43,6 +44,9 @@ extension Font {
     }
     static var textFieldText: Font {
         Font.system(size: 18 * textScale, weight: .bold, design: .rounded)
+    }
+    static var shopCardTitle: Font {
+        Font.system(size: 24 * textScale, weight: .bold, design: .rounded)
     }
 }
 

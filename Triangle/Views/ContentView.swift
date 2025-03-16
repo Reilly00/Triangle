@@ -17,8 +17,8 @@ struct ContentView: View {
             // Main content (with background)
             Group {
                 switch selectedTab {
-                case .leaderboard:
-                    LeaderboardView()
+                case .shop:
+                    ShopView()
                 case .dashboard:
                     DashboardView(userDataStore: userDataStore)
                 case .profile:
