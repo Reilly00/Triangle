@@ -23,3 +23,4 @@ protocol Cosmetic: Codable, Equatable {
     var price: Int { get }
     var uniqueId: String { get }
 }
+

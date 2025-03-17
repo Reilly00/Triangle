@@ -1,24 +1,14 @@
-//
-//  ShopView.swift
-//  Triangle
-//
-//  Created by Josef Zemlicka on 12.03.2025.
-//
-
 import SwiftUI
 
 struct ShopView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @EnvironmentObject var userDataStore: UserDataStore
     @EnvironmentObject var authManager: AuthenticationManager
-    @State var randomCosmetics: [any Cosmetic] = []
+    @State private var randomCosmetics: [any Cosmetic] = []
+    @State private var userInventory: InventoryData?
 
-    // Helper function to check if a cosmetic is unlocked.
-    // TODO: Move this somewhere else
     func isCosmeticUnlocked(_ cosmetic: any Cosmetic) -> Bool {
-        guard let inventory = userDataStore.userData?.inventory else {
-            return false
-        }
+        guard let inventory = userInventory else { return false }
         if let headCosmetic = cosmetic as? HeadCosmetic {
             return inventory.unlockedCosmetics.headCosmetics.contains {
                 $0.uniqueId == headCosmetic.uniqueId
@@ -40,26 +30,26 @@ struct ShopView: View {
                 if horizontalSizeClass == .compact {
                     VStack(spacing: 16) {
                         HStack(spacing: 16) {
-                            ForEach(randomCosmetics.prefix(2), id: \.uniqueId) {
-                                cosmetic in
+                            ForEach(randomCosmetics.prefix(2), id: \.uniqueId) { cosmetic in
                                 ShopCard(
                                     cosmetic: cosmetic,
                                     isUnlocked: isCosmeticUnlocked(cosmetic)
                                 ) {
                                     userDataStore.buyCosmetic(cosmetic)
+                                    userInventory = userDataStore.userData?.inventory // ✅ Update UI
+                                    userDataStore.save() // ✅ Save to CloudKit
                                 }
                             }
                         }
                         HStack(spacing: 16) {
-                            ForEach(
-                                randomCosmetics.dropFirst(2).prefix(2),
-                                id: \.uniqueId
-                            ) { cosmetic in
+                            ForEach(randomCosmetics.dropFirst(2).prefix(2), id: \.uniqueId) { cosmetic in
                                 ShopCard(
                                     cosmetic: cosmetic,
                                     isUnlocked: isCosmeticUnlocked(cosmetic)
                                 ) {
                                     userDataStore.buyCosmetic(cosmetic)
+                                    userInventory = userDataStore.userData?.inventory // ✅ Update UI
+                                    userDataStore.save() // ✅ Save to CloudKit
                                 }
                             }
                         }
@@ -73,6 +63,8 @@ struct ShopView: View {
                                 isUnlocked: isCosmeticUnlocked(cosmetic)
                             ) {
                                 userDataStore.buyCosmetic(cosmetic)
+                                userInventory = userDataStore.userData?.inventory // ✅ Update UI
+                                userDataStore.save() // ✅ Save to CloudKit
                             }
                         }
                     }
@@ -83,8 +75,10 @@ struct ShopView: View {
 
                 Button("Refresh Shop") {
                     print("Shop refreshed")
-                    randomCosmetics = userDataStore.getRandomCosmetics()
+                    randomCosmetics = Array(Set(userDataStore.getRandomCosmetics().map { $0.uniqueId }))
+                        .compactMap { id in userDataStore.getRandomCosmetics().first(where: { $0.uniqueId == id }) }
                 }
+
                 .padding()
                 .frame(maxWidth: .infinity)
                 .background(ColorTheme.primary)
@@ -93,7 +87,12 @@ struct ShopView: View {
 
                 Button("Add 1000 currency") {
                     print("1000 currency added")
-                    userDataStore.userData?.inventory.addCurrency(1000)
+                    if var inventory = userDataStore.userData?.inventory {
+                        inventory.addCurrency(1000)
+                        userDataStore.updateInventory(inventory) // Ensure persistence
+                        userInventory = inventory // Update UI
+                        userDataStore.save() // Saves to both local storage & CloudKit
+                    }
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
@@ -108,7 +107,12 @@ struct ShopView: View {
             .toolbarBackground(.hidden, for: .navigationBar)
         }
         .onAppear {
-            randomCosmetics = userDataStore.getRandomCosmetics()
+            randomCosmetics = userDataStore.getRandomCosmetics().reduce(into: [any Cosmetic]()) { seen, cosmetic in
+                if !seen.contains(where: { $0.uniqueId == cosmetic.uniqueId }) {
+                    seen.append(cosmetic)
+                }
+            }
+            userInventory = userDataStore.userData?.inventory // ✅ Initialize inventory on load
         }
     }
 }

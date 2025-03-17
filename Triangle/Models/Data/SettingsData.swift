@@ -7,12 +7,24 @@
 
 import Foundation
 
+
 struct SettingsData: Codable, Equatable {
     var musicVolume: Double
     var sfxVolume: Double
     var textSize: Double
     var selectedLanguage: String
+
+    // Encode for CloudKit storage
+    func encodeToData() -> Data? {
+        return try? JSONEncoder().encode(self)
+    }
+
+    // Decode from CloudKit storage
+    static func decodeFromData(_ data: Data) -> SettingsData? {
+        return try? JSONDecoder().decode(SettingsData.self, from: data)
+    }
 }
+
 
 extension SettingsData {
 

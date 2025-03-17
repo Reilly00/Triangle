@@ -7,10 +7,22 @@
 
 import Foundation
 
+
 struct InventoryData: Codable, Equatable {
     var currency: Int
     var unlockedCosmetics: UnlockedCosmetics
+
+    // Encode for CloudKit storage
+    func encodeToData() -> Data? {
+        return try? JSONEncoder().encode(self)
+    }
+
+    // Decode from CloudKit storage
+    static func decodeFromData(_ data: Data) -> InventoryData? {
+        return try? JSONDecoder().decode(InventoryData.self, from: data)
+    }
 }
+
 
 struct UnlockedCosmetics: Codable, Equatable {
     var headCosmetics: [HeadCosmetic]
