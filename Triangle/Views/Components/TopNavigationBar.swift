@@ -38,9 +38,9 @@ struct TopNavigationBar: View {
                 // Currency indicator
                 ZStack {
                     Rectangle()
-                        .frame(maxWidth: 150, maxHeight: 70)
+                        .frame(maxWidth: 130, maxHeight: 50)
                         .cornerRadius(30)
-                        .foregroundColor(ColorTheme.primary)
+                        .foregroundColor(ColorTheme.accent)
                     HStack(spacing: 5) {
                         Text(
                             "\(userDataStore.userData?.inventory.currency ?? 0)"
@@ -52,6 +52,7 @@ struct TopNavigationBar: View {
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 28, height: 28)
                     }
+                    
                 }
                 .padding(.trailing, 16)
             }

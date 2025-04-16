@@ -46,4 +46,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environmentObject(UserDataStore(userId: "guest"))
 }

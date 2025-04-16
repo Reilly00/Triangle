@@ -90,6 +90,36 @@
             "rotation": 0,
             "price": 20
         },
+        {
+            "cosmeticId": 10,
+            "assetName": "hc_wizard_hat",
+            "cosmeticTitle": "Wizard Hat",
+            "relativeScale": 0.48,
+            "offsetXRatio": 0.00,
+            "offsetYRatio": -0.32,
+            "rotation": 0,
+            "price": 20
+        },
+        {
+            "cosmeticId": 11,
+            "assetName": "hc_soda_helmet",
+            "cosmeticTitle": "Soda Helmet",
+            "relativeScale": 0.6,
+            "offsetXRatio": 0.00,
+            "offsetYRatio": -0.28,
+            "rotation": 0,
+            "price": 20
+        },
+        {
+            "cosmeticId": 12,
+            "assetName": "hc_foam_glove",
+            "cosmeticTitle": "1# Foam Glove",
+            "relativeScale": 0.5,
+            "offsetXRatio": 0.02,
+            "offsetYRatio": -0.33,
+            "rotation": 0,
+            "price": 20
+        },
     ],
     "eyeCosmetics": [
         {
@@ -141,7 +171,38 @@
             "offsetYRatio": -0.005,
             "rotation": 0,
             "price": 10
+        },
+        {
+            "cosmeticId": 6,
+            "assetName": "ec_8bit_sunglasses",
+            "cosmeticTitle": "8-Bit Sunglasses",
+            "relativeScale": 0.645,
+            "offsetXRatio": 0,
+            "offsetYRatio": 0.02,
+            "rotation": 0,
+            "price": 10
+        },
+        {
+            "cosmeticId": 7,
+            "assetName": "ec_8bit_sunglasses_gold",
+            "cosmeticTitle": "Gold 8-Bit Sunglasses",
+            "relativeScale": 0.645,
+            "offsetXRatio": 0,
+            "offsetYRatio": 0.02,
+            "rotation": 0,
+            "price": 10
+        },
+        {
+            "cosmeticId": 8,
+            "assetName": "ec_8bit_sunglasses_rainbow",
+            "cosmeticTitle": "Rainbow 8-Bit Sunglasses",
+            "relativeScale": 0.645,
+            "offsetXRatio": 0,
+            "offsetYRatio": 0.02,
+            "rotation": 0,
+            "price": 10
         }
+        
     ],
     "mouthCosmetics": [
         {

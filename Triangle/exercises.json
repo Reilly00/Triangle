@@ -1,0 +1,166 @@
+{
+    "headCosmetics": [
+        {
+            "cosmeticId": 1,
+            "assetName": "hc_none",
+            "cosmeticTitle": "None",
+            "relativeScale": 0,
+            "offsetXRatio": 0,
+            "offsetYRatio": 0,
+            "rotation": 0,
+            "price": 0
+        },
+        {
+            "cosmeticId": 2,
+            "assetName": "hc_beanie",
+            "cosmeticTitle": "Beanie",
+            "relativeScale": 0.45,
+            "offsetXRatio": 0.0,
+            "offsetYRatio": -0.25,
+            "rotation": 0,
+            "price": 10
+        },
+        {
+            "cosmeticId": 3,
+            "assetName": "hc_tophat",
+            "cosmeticTitle": "Tophat",
+            "relativeScale": 0.46,
+            "offsetXRatio": 0.0,
+            "offsetYRatio": -0.33,
+            "rotation": 0,
+            "price": 10
+        },
+        {
+            "cosmeticId": 4,
+            "assetName": "hc_partyhat",
+            "cosmeticTitle": "Party Hat",
+            "relativeScale": 0.45,
+            "offsetXRatio": 0,
+            "offsetYRatio": -0.36,
+            "rotation": 0,
+            "price": 20
+        },
+        {
+            "cosmeticId": 5,
+            "assetName": "hc_afro",
+            "cosmeticTitle": "Afro",
+            "relativeScale": 0.60,
+            "offsetXRatio": 0,
+            "offsetYRatio": -0.26,
+            "rotation": 0,
+            "price": 20
+        },
+        {
+            "cosmeticId": 6,
+            "assetName": "hc_red_bandana",
+            "cosmeticTitle": "Red Bandana",
+            "relativeScale": 0.48,
+            "offsetXRatio": 0,
+            "offsetYRatio": -0.17,
+            "rotation": 0,
+            "price": 20
+        },
+        {
+            "cosmeticId": 7,
+            "assetName": "hc_green_bandana",
+            "cosmeticTitle": "Green Bandana",
+            "relativeScale": 0.48,
+            "offsetXRatio": 0,
+            "offsetYRatio": -0.17,
+            "rotation": 0,
+            "price": 20
+        },
+        {
+            "cosmeticId": 8,
+            "assetName": "hc_blue_bandana",
+            "cosmeticTitle": "Blue Bandana",
+            "relativeScale": 0.48,
+            "offsetXRatio": 0,
+            "offsetYRatio": -0.17,
+            "rotation": 0,
+            "price": 20
+        },
+        {
+            "cosmeticId": 9,
+            "assetName": "hc_baseball_cap",
+            "cosmeticTitle": "Baseball Cap",
+            "relativeScale": 0.48,
+            "offsetXRatio": 0.05,
+            "offsetYRatio": -0.25,
+            "rotation": 0,
+            "price": 20
+        },
+    ],
+    "eyeCosmetics": [
+        {
+            "cosmeticId": 1,
+            "assetName": "ec_none",
+            "cosmeticTitle": "None",
+            "relativeScale": 0,
+            "offsetXRatio": 0,
+            "offsetYRatio": 0,
+            "rotation": 0,
+            "price": 0
+        },
+        {
+            "cosmeticId": 2,
+            "assetName": "ec_sunglasses",
+            "cosmeticTitle": "Sunglasses",
+            "relativeScale": 0.45,
+            "offsetXRatio": 0.0,
+            "offsetYRatio": 0,
+            "rotation": 0,
+            "price": 10
+        },
+        {
+            "cosmeticId": 3,
+            "assetName": "ec_perscription",
+            "cosmeticTitle": "Perscription Glasses",
+            "relativeScale": 0.44,
+            "offsetXRatio": 0,
+            "offsetYRatio": -0.005,
+            "rotation": 0,
+            "price": 10
+        },
+        {
+            "cosmeticId": 4,
+            "assetName": "ec_ninjamask",
+            "cosmeticTitle": "Ninja Mask",
+            "relativeScale": 0.645,
+            "offsetXRatio": 0,
+            "offsetYRatio": -0.005,
+            "rotation": 0,
+            "price": 10
+        },
+        {
+            "cosmeticId": 5,
+            "assetName": "ec_heart_sunglasses",
+            "cosmeticTitle": "Heart Sunglasses",
+            "relativeScale": 0.645,
+            "offsetXRatio": 0,
+            "offsetYRatio": -0.005,
+            "rotation": 0,
+            "price": 10
+        }
+    ],
+    "mouthCosmetics": [
+        {
+            "cosmeticId": 1,
+            "assetName": "mouth_default"
+        },
+        {
+            "cosmeticId": 2,
+            "assetName": "mouth_smile"
+        }
+    ],
+    "colorCosmetics": [
+        {
+            "cosmeticId": 1,
+            "colorHex": "#0000FF"
+        },
+        {
+            "cosmeticId": 2,
+            "colorHex": "#FF0000"
+        }
+    ]
+}

@@ -7,23 +7,11 @@
 import CloudKit
 import CryptoKit
 
-final class CloudKitManager {
+class CloudKitManager {
     static let shared = CloudKitManager()
-
+    
     private let container = CKContainer.default()
     private let privateDatabase = CKContainer.default().privateCloudDatabase
-
-    func fetchUserData(username: String, completion: @escaping (UserData?, Error?) -> Void) {
-        let recordID = CKRecord.ID(recordName: username)
-        privateDatabase.fetch(withRecordID: recordID) { record, error in
-            if let record = record, let data = record["userData"] as? Data,
-               let userData = UserData.decodeFromData(data) {
-                completion(userData, nil)
-            } else {
-                completion(nil, error)
-            }
-        }
-    }
 
     /// Generates a random salt for password hashing
     private func generateSalt() -> String {
@@ -190,34 +178,6 @@ final class CloudKitManager {
             }
         }
     }
-    func saveUserData(username: String, userData: UserData, completion: @escaping (Bool, Error?) -> Void) {
-        let recordID = CKRecord.ID(recordName: username)
-
-        privateDatabase.fetch(withRecordID: recordID) { [weak self] existingRecord, error in
-            let record = existingRecord ?? CKRecord(recordType: "UserData", recordID: recordID)
-            record["username"] = username as CKRecordValue
-
-            if let encodedData = userData.encodeToData() {
-                record["userData"] = encodedData as CKRecordValue
-            } else {
-                completion(false, NSError(domain: "EncodingError", code: 0, userInfo: nil))
-                return
-            }
-
-            self?.privateDatabase.save(record) { _, error in
-                DispatchQueue.main.async {
-                    if let error = error {
-                        print("❌ Error saving user data: \(error.localizedDescription)")
-                        completion(false, error)
-                    } else {
-                        print("✅ User data saved successfully for \(username)")
-                        completion(true, nil)
-                    }
-                }
-            }
-        }
-    }
-
     func loadUserProgress(username: String, completion: @escaping (Int?, Int?, Error?) -> Void) {
         let predicate = NSPredicate(format: "username == %@", username)
         let query = CKQuery(recordType: "UserProgress", predicate: predicate)
@@ -242,28 +202,7 @@ final class CloudKitManager {
             }
         }
     }
-    func loadUserData(username: String, completion: @escaping (UserData?, Error?) -> Void) {
-            let recordID = CKRecord.ID(recordName: username)
 
-            privateDatabase.fetch(withRecordID: recordID) { record, error in
-                DispatchQueue.main.async {
-                    if let error = error {
-                        print("❌ Error loading user data: \(error.localizedDescription)")
-                        completion(nil, error)
-                        return
-                    }
-
-                    if let record = record, let encodedData = record["userData"] as? Data,
-                       let userData = UserData.decodeFromData(encodedData) {
-                        print("✅ UserData loaded from CloudKit for \(username)")
-                        completion(userData, nil)
-                    } else {
-                        print("⚠️ No user data found for \(username)")
-                        completion(nil, nil)
-                    }
-                }
-            }
-        }
     func checkiCloudStatus(completion: @escaping (Bool) -> Void) {
         container.accountStatus { status, error in
             DispatchQueue.main.async {

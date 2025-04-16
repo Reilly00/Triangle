@@ -32,7 +32,7 @@ struct InventoryView: View {
                 TopNavigationBar(title: "Inventory", onBack: { dismiss() })
 
                 // Character
-                Character(characterData: characterData)
+                Character(characterData: characterData, useAnimations: true)
                     .frame(height: 400)
                     .padding()
 

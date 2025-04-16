@@ -11,8 +11,6 @@ struct ProfileView: View {
     @StateObject var profileController = ProfileController()
     @EnvironmentObject var userDataStore: UserDataStore
     @EnvironmentObject var authManager: AuthenticationManager
-    @State private var characterData: CharacterData = CharacterData
-        .defaultCharacter
 
     var body: some View {
         NavigationStack {
@@ -21,13 +19,24 @@ struct ProfileView: View {
                     title: authManager.currentUserId ?? "Profile", onBack: nil)
                 ScrollView {
                     VStack {
-                        Character(characterData: characterData)
+                        Character(characterData: userDataStore.userData?.character ?? CharacterData.defaultCharacter, useAnimations: true)
                             .frame(height: 400)
                             .padding()
                         NavigationLink(
                             destination: InventoryView()
                         ) {
                             Text("Customise")
+                                .font(.pageTitle)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(ColorTheme.primary)
+                                .foregroundColor(.white)
+                                .cornerRadius(20)
+                        }
+                        NavigationLink(
+                            destination: SettingsView(userDataStore: userDataStore)
+                        ) {
+                            Text("Settings")
                                 .font(.pageTitle)
                                 .padding()
                                 .frame(maxWidth: .infinity)
@@ -60,15 +69,6 @@ struct ProfileView: View {
             }
         }
         .navigationBarHidden(true)
-        .onAppear {
-            print("Current user data: \(userDataStore.userData)")
-            if let storedCharacter = userDataStore.userData?.character {
-                characterData = storedCharacter
-                print("Loaded character data: \(characterData)")
-            } else {
-                print("No character data found.")
-            }
-        }
     }
 }
 

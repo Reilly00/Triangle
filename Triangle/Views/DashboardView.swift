@@ -7,19 +7,6 @@
 
 import SwiftUI
 
-struct ExerciseParameters: Identifiable, Hashable {
-    let id: Int
-    let totalTriangles: Int
-    let currentLevelIndex: Int
-}
-
-enum DashboardDestination: Hashable, Identifiable {
-    case levelTransition(ExerciseParameters)
-    case levelSelector(ExerciseParameters)
-
-    var id: Self { self }
-}
-
 // MARK: - DashboardView
 struct DashboardView: View {
     @EnvironmentObject var navbarVisibility: NavbarVisibility
@@ -39,76 +26,29 @@ struct DashboardView: View {
                 TopNavigationBar(title: "Dashboard", onBack: nil)
                 ScrollView {
                     VStack {
-                        // Define your exercise definitions.
-                        let exercises: [(id: Int, totalLevels: Int)] = [
-                            (1, 8), (2, 8), (3, 8), (4, 8),
-                        ]
-
                         LazyVGrid(
                             columns: [
-                                GridItem(.flexible()), GridItem(.flexible()),
+                                GridItem(.flexible()),
                             ],
                             spacing: 10
                         ) {
-                            ForEach(exercises, id: \.id) { exercise in
-                                let info = dashboardController.getExerciseInfo(
-                                    forExerciseId: exercise.id,
-                                    totalLevels: exercise.totalLevels
-                                )
-                                DashboardCard(
-                                    title: titleForExercise(
-                                        exerciseId: exercise.id),
-                                    imageNames: imageNamesForExercise(
-                                        exerciseId: exercise.id),
-                                    progress: info.progress,
-                                    currentExercise: info.currentLevel,
-                                    locked: isExerciseLocked(
-                                        exerciseId: exercise.id,
-                                        currentLevel: info.currentLevel
-                                    ),
-                                    action: {
-                                        let params = ExerciseParameters(
-                                            id: exercise.id,
-                                            totalTriangles: exercise
-                                                .totalLevels,
-                                            currentLevelIndex: info.currentLevel
-                                        )
-                                        navigationPath.append(
-                                            DashboardDestination.levelTransition(
-                                                params)
-                                        )
-                                    }
-                                )
+                            NavigationLink(destination: ExerciseSelectorView()) {
+                                DashboardCard(title: "Exercises", imageName: "exercises_mascot")
+                                    .frame(maxHeight: 400)
+                            }
+                            NavigationLink(destination: MinigameSelectorView()) {
+                                DashboardCard(title: "Minigames", imageName: "minigames_mascot")
+                                    .frame(maxHeight: 400)
                             }
                         }
-                        .frame(maxWidth: .infinity)
                     }
-                    .padding()
+                    .frame(maxWidth: .infinity)
                 }
+                .padding()
+
             }
             // Hide the system navigation bar.
             .toolbar(.hidden, for: .navigationBar)
-            .navigationDestination(for: DashboardDestination.self) {
-                destination in
-                switch destination {
-                case .levelTransition(let params):
-                    LevelTransitionView(
-                        onCompletion: {
-                            navigationPath.removeLast()
-                            navigationPath.append(
-                                DashboardDestination.levelSelector(params))
-                        }
-                    )
-                    .environmentObject(navbarVisibility)
-                case .levelSelector(let params):
-                    LevelSelectorView(
-                        exerciseId: params.id,
-                        totalTriangles: params.totalTriangles,
-                        currentLevelIndex: params.currentLevelIndex
-                    )
-                    .environmentObject(navbarVisibility)
-                }
-            }
             .background(Color(hex: 0xB5CFE3))
         }
     }

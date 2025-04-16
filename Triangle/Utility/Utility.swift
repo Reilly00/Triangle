@@ -18,4 +18,5 @@ extension Color {
 
 final class NavbarVisibility: ObservableObject {
     @Published var isVisible: Bool = true
+    @Published var isBottomNavVisible: Bool = true
 }

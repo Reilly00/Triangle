@@ -13,12 +13,13 @@ struct SettingsView: View {
     @StateObject var settingsController: SettingsController
     @State private var showPrivacyPolicy: Bool = false
 
-    init(settingsController: SettingsController) {
-        _settingsController = StateObject(wrappedValue: settingsController)
+    init(userDataStore: UserDataStore) {
+        _settingsController = StateObject(wrappedValue: SettingsController(userDataStore: userDataStore))
     }
 
     var body: some View {
         NavigationStack {
+            
             if let settings = userDataStore.userData?.settings {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
@@ -174,11 +175,8 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         let userDataStore = UserDataStore(userId: "previewUser")
-        userDataStore.userData = userDataStore.loadUserData(for: "previewUser")
-        let settingsController = SettingsController(
-            userDataStore: userDataStore)
 
-        return SettingsView(settingsController: settingsController)
+        return SettingsView(userDataStore: userDataStore)
             .environmentObject(userDataStore)
             .environmentObject(AuthenticationManager())
             .previewDevice("iPad Pro 11-inch")

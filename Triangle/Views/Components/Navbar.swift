@@ -50,16 +50,19 @@ struct Navbar: View {
     var body: some View {
         ZStack {
             Color.clear.ignoresSafeArea()
-            HalfCircleShape()
-                .fill(.ultraThinMaterial)
-                .shadow(radius: 5)
-                .frame(width: 350, height: 130)
-                .offset(y: 20)// Adjust as needed
+//            HalfCircleShape()
+//                .fill(.ultraThinMaterial)
+//                .frame(width: 350, height: 130)
+//                .offset(y: 20)
 
             VStack(spacing: 16) {
                 HStack(spacing: -20) {
-                    // Leaderboard Button
-                    Button(action: { selectedTab = .shop }) {
+                    // Shop Button
+                    Button(action: {
+                        selectedTab = .shop
+                        SoundManager.instance.playSound(sound: .Jump)
+                    }) {
+
                         ZStack {
                             TriangleShape()
                                 .fill(
@@ -91,7 +94,10 @@ struct Navbar: View {
                     }
 
                     // Dashboard Button
-                    Button(action: { selectedTab = .dashboard }) {
+                    Button(action: {
+                        selectedTab = .dashboard
+                        SoundManager.instance.playSound(sound: .Jump)
+                    }) {
                         ZStack {
                             TriangleShape()
                                 .fill(
@@ -125,7 +131,10 @@ struct Navbar: View {
                     .offset(y: -15)
 
                     // Profile Button
-                    Button(action: { selectedTab = .profile }) {
+                    Button(action: {
+                        selectedTab = .profile
+                        SoundManager.instance.playSound(sound: .Jump)
+                    }) {
                         ZStack {
                             TriangleShape()
                                 .fill(
